@@ -1,0 +1,23 @@
+﻿@page "/servicerequest"
+@inject HttpClient HttpClient
+
+<h3>Service Request</h3>
+
+<form @onsubmit="SubmitServiceRequest">
+    <label for="clientName">Client Name:</label>
+    <input type="text" id="clientName" @bind="serviceRequest.ClientName" required />
+
+    <!-- Add other input fields as needed -->
+
+    <button type="submit">Submit</button>
+</form>
+
+@code {
+    private ServiceRequest serviceRequest = new ServiceRequest();
+
+    private async Task SubmitServiceRequest()
+    {
+        var response = await HttpClient.PostAsJsonAsync("api/servicerequests", serviceRequest);
+        // Handle the response as needed
+    }
+}

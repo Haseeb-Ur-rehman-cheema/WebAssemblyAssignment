@@ -1,0 +1,20 @@
+﻿@page "/fetchfreelancers"
+@inject HttpClient HttpClient
+
+<h3>Freelancers</h3>
+
+<ul>
+    @foreach (var freelancer in freelancers)
+    {
+        <li>@freelancer.Name</li>   
+    }
+</ul>
+
+@code {
+    private List<Freelancer> freelancers = new List<Freelancer>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        freelancers = await HttpClient.GetFromJsonAsync<List<Freelancer>>("api/freelancers");
+    }
+}
