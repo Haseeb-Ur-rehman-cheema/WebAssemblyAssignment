@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
+using System.Linq;
 using WebAssemblyAssignment.Server;
 using WebAssemblyAssignment.Shared;
 
@@ -7,7 +7,7 @@ using WebAssemblyAssignment.Shared;
 [Route("api/[controller]")]
 public class FreelancersController : ControllerBase
 {
-    private readonly ApplicationDbContext _context; // Corrected variable name
+    private readonly ApplicationDbContext _context;
 
     public FreelancersController(ApplicationDbContext context)
     {
@@ -28,5 +28,38 @@ public class FreelancersController : ControllerBase
     {
         var freelancers = _context.Freelancers.ToList();
         return Ok(freelancers);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult EditFreelancer(int id, [FromBody] Freelancer updatedFreelancer)
+    {
+        var existingFreelancer = _context.Freelancers.Find(id);
+        if (existingFreelancer == null)
+        {
+            return NotFound("Freelancer not found");
+        }
+
+        existingFreelancer.FirstName = updatedFreelancer.FirstName;
+        existingFreelancer.LastName = updatedFreelancer.LastName;
+        // Update other properties as needed
+
+        _context.SaveChanges();
+
+        return Ok("Freelancer updated successfully");
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult RemoveFreelancer(int id)
+    {
+        var existingFreelancer = _context.Freelancers.Find(id);
+        if (existingFreelancer == null)
+        {
+            return NotFound("Freelancer not found");
+        }
+
+        _context.Freelancers.Remove(existingFreelancer);
+        _context.SaveChanges();
+
+        return Ok("Freelancer removed successfully");
     }
 }
